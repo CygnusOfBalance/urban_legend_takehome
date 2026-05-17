@@ -62,3 +62,7 @@ def apply_enrichment(click_id: int) -> None:
         return
 
     Click.objects.filter(pk=click_id).update(**geo)
+
+
+def enrich_click_async(click_id: int) -> None:
+    """Non-blocking enrichment hook; wired in WS-E part 2."""
