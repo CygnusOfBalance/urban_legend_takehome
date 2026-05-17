@@ -7,6 +7,7 @@
 
 
 ## Setup
+Requires Python3.10
 `make setup` should satisfy one-command setup requirement
 ```bash
 make setup

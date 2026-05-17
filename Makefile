@@ -1,7 +1,12 @@
-PYTHON ?= $(shell command -v python3.10 2>/dev/null || command -v python3)
+PYTHON ?= python3.10
 VENV := .venv
 PY := $(VENV)/bin/python
 PIP := $(VENV)/bin/pip
+
+define require_python310
+	@command -v $(PYTHON) >/dev/null 2>&1 || (echo "Python 3.10+ required (install python3.10)" && exit 1)
+	@$(PYTHON) -c 'import sys; assert sys.version_info >= (3, 10), f"Python 3.10+ required, got {sys.version}"'
+endef
 
 .PHONY: help setup install migrate test run shell clean
 
@@ -16,7 +21,7 @@ help:
 	@echo "  make clean    Remove venv and local database"
 
 $(VENV)/bin/python:
-	@test -n "$(PYTHON)" || (echo "python3 not found; install Python 3.10+" && exit 1)
+	$(require_python310)
 	$(PYTHON) -m venv $(VENV)
 
 setup: $(VENV)/bin/python install migrate
