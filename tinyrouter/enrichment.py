@@ -10,12 +10,12 @@ from tinyrouter.models import Click
 logger = logging.getLogger(__name__)
 
 IP_API_BASE = "http://ip-api.com/json"
-IP_API_FIELDS = "status,country,regionName,isp,as"
+IP_API_FIELDS = "status,countryCode,regionName,isp,as"
 IP_API_TIMEOUT = 2
 
 
 def fetch_geo(ip: str) -> dict[str, Any] | None:
-    """Return country/region/asn/isp from ip-api.com, or None on failure."""
+    """Return country code/region/asn/isp from ip-api.com, or None on failure."""
     if not ip:
         return None
 
@@ -41,7 +41,7 @@ def fetch_geo(ip: str) -> dict[str, Any] | None:
         return None
 
     return {
-        "country": data.get("country") or None,
+        "country": data.get("countryCode") or None,
         "region": data.get("regionName") or None,
         "asn": data.get("as") or None,
         "isp": data.get("isp") or None,
