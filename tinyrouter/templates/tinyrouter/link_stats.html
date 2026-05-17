@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ link.slug }} — stats</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; line-height: 1.5; }
+    h1 { font-size: 1.5rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #ddd; }
+    .meta { color: #555; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>{{ stats.slug }}</h1>
+  <p class="meta">{{ link.destination_url }}</p>
+  <p class="meta">{{ link.campaign_code }} · {{ link.creator_handle }}</p>
+
+  <h2>Summary</h2>
+  <table>
+    <tr><th>Total clicks</th><td>{{ stats.total_clicks }}</td></tr>
+    <tr><th>Unique IPs</th><td>{{ stats.unique_ips }}</td></tr>
+  </table>
+
+  <h2>By country</h2>
+  {% if stats.by_country %}
+  <table>
+    <tr><th>Country</th><th>Clicks</th></tr>
+    {% for country, count in stats.by_country.items %}
+    <tr><td>{{ country }}</td><td>{{ count }}</td></tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>No country data yet.</p>
+  {% endif %}
+</body>
+</html>

@@ -23,6 +23,7 @@ class Click(models.Model):
     region = models.CharField(max_length=128, null=True, blank=True)
     asn = models.CharField(max_length=255, null=True, blank=True)
     isp = models.CharField(max_length=255, null=True, blank=True)
+    fraud_score = models.FloatField(null=True, blank=True)
 
     class Meta:
         ordering = ["-clicked_at"]
