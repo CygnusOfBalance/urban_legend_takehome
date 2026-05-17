@@ -6,6 +6,7 @@ import requests
 from django.db import close_old_connections
 
 from tinyrouter.models import Click
+from tinyrouter.services.fraud import compute_fraud_score
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +64,7 @@ def apply_enrichment(click_id: int) -> None:
     if not geo:
         return
 
+    geo["fraud_score"] = compute_fraud_score(geo.get("asn"), geo.get("isp"))
     Click.objects.filter(pk=click_id).update(**geo)
 
 
