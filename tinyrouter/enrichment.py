@@ -1,7 +1,9 @@
 import logging
+import threading
 from typing import Any
 
 import requests
+from django.db import close_old_connections
 
 from tinyrouter.models import Click
 
@@ -65,4 +67,14 @@ def apply_enrichment(click_id: int) -> None:
 
 
 def enrich_click_async(click_id: int) -> None:
-    """Non-blocking enrichment hook; wired in WS-E part 2."""
+    """Enqueue ip-api enrichment on a background thread (does not block redirect)."""
+    thread = threading.Thread(target=_run_enrichment, args=(click_id,), daemon=True)
+    thread.start()
+
+
+def _run_enrichment(click_id: int) -> None:
+    close_old_connections()
+    try:
+        apply_enrichment(click_id)
+    finally:
+        close_old_connections()
