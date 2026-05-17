@@ -4,6 +4,7 @@ from django.views import View
 from tinyrouter.bot_filter import is_bot
 from tinyrouter.enrichment import enrich_click_async
 from tinyrouter.models import Click, Link
+from tinyrouter.services.dedup import is_duplicate_click
 from tinyrouter.services.utm import append_query_params
 
 
@@ -24,11 +25,12 @@ class RedirectView(View):
         destination = append_query_params(link.destination_url, request.GET.dict())
         user_agent = request.META.get("HTTP_USER_AGENT")
 
-        if not is_bot(user_agent):
+        ip_address = _client_ip(request)
+        if not is_bot(user_agent) and not is_duplicate_click(slug, ip_address):
             click = Click.objects.create(
                 link=link,
                 slug=slug,
-                ip_address=_client_ip(request),
+                ip_address=ip_address,
                 user_agent=user_agent or "",
                 query_params=request.GET.dict(),
                 is_bot=False,
